@@ -1,9 +1,9 @@
-package carlainet;
+package carlanetpp;
 
-simple CarlaInetManager
+simple CarlanetManager
 {
     parameters:
-        @class(CarlaInetManager);
+        @class(CarlanetManager);
 
         string host = default("localhost");  // server hostname
         string protocol = default("tcp");  // server hostname

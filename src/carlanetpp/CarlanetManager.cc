@@ -1,4 +1,4 @@
-#include "CarlaInetManager.h"
+#include "../carlanetpp/CarlanetManager.h"
 
 #include <stdexcept>
 
@@ -19,28 +19,28 @@
 using namespace inet;
 using namespace std;
 
-Define_Module(CarlaInetManager);
+Define_Module(CarlanetManager);
 
-CarlaInetManager::CarlaInetManager(){
+CarlanetManager::CarlanetManager(){
 
 }
-CarlaInetManager::~CarlaInetManager(){
+CarlanetManager::~CarlanetManager(){
     cancelAndDelete(simulationTimeStepEvent);
 }
 
 
-void CarlaInetManager::finish(){
+void CarlanetManager::finish(){
 
 }
 
 
-void CarlaInetManager::sendToCarla(json jsonMsg){
+void CarlanetManager::sendToCarla(json jsonMsg){
     std::stringstream msg;
     //    msg << jsonMsg.dump();
     socket.send(zmq::buffer(jsonMsg.dump()), zmq::send_flags::none);
 }
 
-json CarlaInetManager::receiveFromCarla(double timeoutFactor){
+json CarlanetManager::receiveFromCarla(double timeoutFactor){
     // set actual timeout
     int recv_timeout_ms =  max(4000, int(timeout_ms * timeoutFactor));
     this->socket.setsockopt(ZMQ_RCVTIMEO, recv_timeout_ms);
@@ -67,12 +67,12 @@ json CarlaInetManager::receiveFromCarla(double timeoutFactor){
     return jsonResp;
 }
 
-template <typename T> T CarlaInetManager::receiveFromCarla(double timeoutFactor){
+template <typename T> T CarlanetManager::receiveFromCarla(double timeoutFactor){
     return receiveFromCarla(timeoutFactor).get<T>();
 }
 
 
-void CarlaInetManager::initialize(int stage)
+void CarlanetManager::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
     if (stage == INITSTAGE_LOCAL){
@@ -97,23 +97,23 @@ void CarlaInetManager::initialize(int stage)
 }
 
 
-void CarlaInetManager::registerMobilityModule(CarlaInetMobility *mod){
+void CarlanetManager::registerMobilityModule(CarlanetMobility *mod){
     const char* mobileNodeName = mod->getParentModule()->getFullName();
-    modulesToTrack.insert(pair<string,CarlaInetMobility*>(string(mobileNodeName), mod));
+    modulesToTrack.insert(pair<string,CarlanetMobility*>(string(mobileNodeName), mod));
 }
 
 
 //void CarlaCommunicationManager::findModulesToTrack(){
 //    auto rootModule = getModuleByPath("<root>");
-//    auto mobilityModList = getSubmodulesOfType<CarlaInetMobility>(rootModule, true);
+//    auto mobilityModList = getSubmodulesOfType<CarlanetMobility>(rootModule, true);
 //    for (auto mobilityMod : mobilityModList) {
 //        string nodeModuleName = mobilityMod->getParentModule()->getFullName();
-//        modulesToTrack.insert(pair<string, CarlaInetMobility*>(nodeModuleName, mobilityMod));
+//        modulesToTrack.insert(pair<string, CarlanetMobility*>(nodeModuleName, mobilityMod));
 //    }
 //}
 
 
-void CarlaInetManager::initializeCarla(){
+void CarlanetManager::initializeCarla(){
     // conversion
     auto movingActorList = list<carla_api_base::init_actor>();
     for(auto elem: modulesToTrack){
@@ -153,7 +153,7 @@ void CarlaInetManager::initializeCarla(){
     scheduleAt(simTime() + response.initial_timestamp, simulationTimeStepEvent);
 }
 
-void CarlaInetManager::doSimulationTimeStep(){
+void CarlanetManager::doSimulationTimeStep(){
     carla_api::simulation_step msg;
     msg.carla_timestep = simulationTimeStep;
     msg.timestamp = simTime().dbl();
@@ -167,7 +167,7 @@ void CarlaInetManager::doSimulationTimeStep(){
     updateNodesPosition(response.actors_positions);
 }
 
-void CarlaInetManager::updateNodesPosition(std::list<carla_api_base::actor_position> actors){
+void CarlanetManager::updateNodesPosition(std::list<carla_api_base::actor_position> actors){
     set<string> knownActors = set<string>();
     for(auto const& item: modulesToTrack)
         knownActors.insert(item.first);
@@ -196,7 +196,7 @@ void CarlaInetManager::updateNodesPosition(std::list<carla_api_base::actor_posit
 
 
 
-void CarlaInetManager::connect(){
+void CarlanetManager::connect(){
     this->context = zmq::context_t {1};
     this->socket = zmq::socket_t{context, zmq::socket_type::req};
 
@@ -208,7 +208,7 @@ void CarlaInetManager::connect(){
     socket.connect(addr);
 }
 
-void CarlaInetManager::handleMessage(cMessage *msg)
+void CarlanetManager::handleMessage(cMessage *msg)
 {
     if (msg->isSelfMessage()){
         if (msg == simulationTimeStepEvent){
@@ -222,7 +222,7 @@ void CarlaInetManager::handleMessage(cMessage *msg)
 /* ***********************************
  * Dynamic creation/destroying actors
  * ********************************** */
-void CarlaInetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
+void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
     auto newActorModuleType = newActor.is_net_active ? networkActiveModuleType : networkPassiveModuleType;
     //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
 
@@ -238,8 +238,8 @@ void CarlaInetManager::createAndInitializeActor(carla_api_base::actor_position n
     Coord position = Coord(newActor.position[0], newActor.position[1], newActor.position[2]);
     Coord velocity = Coord(newActor.velocity[0],newActor.velocity[1],newActor.velocity[2]);
     Quaternion rotation = Quaternion(EulerAngles(rad(newActor.rotation[0]),rad(newActor.rotation[1]),rad(newActor.rotation[2])));
-    auto carlaInetMobilityMod = check_and_cast<CarlaInetMobility *>(new_mod->getSubmodule("mobility"));
-    carlaInetMobilityMod->preInitialize(position, velocity, rotation);
+    auto CarlanetMobilityMod = check_and_cast<CarlanetMobility *>(new_mod->getSubmodule("mobility"));
+    CarlanetMobilityMod->preInitialize(position, velocity, rotation);
 
     // The INET visualizer listens to model change notifications on the
     // network object by default. We assume this is our parent.
@@ -252,7 +252,7 @@ void CarlaInetManager::createAndInitializeActor(carla_api_base::actor_position n
 }
 
 
-void CarlaInetManager::destroyActor(string actorId){
+void CarlanetManager::destroyActor(string actorId){
     //NOTE the map contains the reference to the mobilityModule
     // This implementation assumes that mobility module is a direct child of the actor module
     auto mod = modulesToTrack[actorId]->getParentModule();
@@ -267,7 +267,7 @@ void CarlaInetManager::destroyActor(string actorId){
 ///*
 // * PUBLIC APIs
 // * */
-json CarlaInetManager::sendToAndGetFromCarla(json requestMessage){
+json CarlanetManager::sendToAndGetFromCarla(json requestMessage){
     carla_api::generic_message toCarlaMessage;
     toCarlaMessage.user_defined = requestMessage;
     toCarlaMessage.timestamp = simTime().dbl();
@@ -281,14 +281,14 @@ json CarlaInetManager::sendToAndGetFromCarla(json requestMessage){
 }
 
 
-template<typename S> json CarlaInetManager::sendToAndGetFromCarla(S requestMessage){
+template<typename S> json CarlanetManager::sendToAndGetFromCarla(S requestMessage){
     json jsonRequestMessage = requestMessage;
     return sendToAndGetFromCarla(jsonRequestMessage);
 }
-template<typename T> T CarlaInetManager::sendToAndGetFromCarla(json requestMessage){
+template<typename T> T CarlanetManager::sendToAndGetFromCarla(json requestMessage){
     return sendToAndGetFromCarla(requestMessage).get<T>();
 }
-template<typename S, typename T> T CarlaInetManager::sendToAndGetFromCarla(S requestMessage){
+template<typename S, typename T> T CarlanetManager::sendToAndGetFromCarla(S requestMessage){
     json jsonRequestMessage = requestMessage;
     return sendToAndGetFromCarla(jsonRequestMessage).get<T>();
 }

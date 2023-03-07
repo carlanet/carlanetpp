@@ -22,13 +22,13 @@ Define_Module(TestApp);
 void TestApp::initialize(int stage)
 {
     if (stage == inet::INITSTAGE_LOCAL){
-        carlaInetManager = check_and_cast<CarlaInetManager*>(getModuleByPath("<root>.carlaInetManager"));
+        carlanetManager = check_and_cast<CarlanetManager*>(getModuleByPath("<root>.CarlanetManager"));
     }
 
     if (stage == inet::INITSTAGE_LAST){
         json msg;
         msg["message_type"] = "hello";
-        carlaInetManager->sendToAndGetFromCarla(msg);
+        carlanetManager->sendToAndGetFromCarla(msg);
     }
 }
 

@@ -18,7 +18,7 @@
 
 #include <omnetpp.h>
 #include "inet/common/InitStages.h"
-#include "../carlainet/carlainet.h"
+#include "../carlanetpp/carlanet.h"
 
 using namespace omnetpp;
 
@@ -33,7 +33,7 @@ class TestApp : public cSimpleModule
     virtual void handleMessage(cMessage *msg) override;
 
   private:
-    CarlaInetManager *carlaInetManager = nullptr;
+    CarlanetManager *carlanetManager = nullptr;
 };
 
 #endif

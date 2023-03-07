@@ -13,31 +13,31 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "CarlaInetMobility.h"
+#include "CarlanetMobility.h"
 
-#include "CarlaInetManager.h"
+#include "CarlanetManager.h"
 
-Define_Module(CarlaInetMobility);
+Define_Module(CarlanetMobility);
 
-void CarlaInetMobility::initialize(int stage)
+void CarlanetMobility::initialize(int stage)
 {
     MobilityBase::initialize(stage);
     if (stage == inet::INITSTAGE_LOCAL){
         carlaActorType = par("carlaActorType").stdstringValue();
         carlaActorConfiguration = check_and_cast<cValueMap*>(par("carlaActorConfiguration").objectValue()); //.cValueMap(); // .objectValue();
-        auto carlaManager = check_and_cast<CarlaInetManager*>(getModuleByPath("<root>.carlaInetManager"));
+        auto carlaManager = check_and_cast<CarlanetManager*>(getModuleByPath("<root>.CarlanetManager"));
         // register to carlaManager
         carlaManager->registerMobilityModule(this);
     }
 }
 
-void CarlaInetMobility::setInitialPosition(){
+void CarlanetMobility::setInitialPosition(){
     if (!preInitialized){
         MobilityBase::setInitialPosition();
     }
 }
 
-void CarlaInetMobility::preInitialize(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
+void CarlanetMobility::preInitialize(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
     preInitialized = true;
     lastPosition = position;
     lastVelocity = velocity;
@@ -45,7 +45,7 @@ void CarlaInetMobility::preInitialize(const inet::Coord& position, const inet::C
 }
 
 
-void CarlaInetMobility::nextPosition(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
+void CarlanetMobility::nextPosition(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation){
     lastPosition = position;
     lastVelocity = velocity;
     lastOrientation = rotation;
@@ -54,36 +54,36 @@ void CarlaInetMobility::nextPosition(const inet::Coord& position, const inet::Co
 }
 
 
-const inet::Coord& CarlaInetMobility::getCurrentPosition()
+const inet::Coord& CarlanetMobility::getCurrentPosition()
 {
     return lastPosition;
 }
 
-const inet::Coord& CarlaInetMobility::getCurrentVelocity()
+const inet::Coord& CarlanetMobility::getCurrentVelocity()
 {
     return lastVelocity;
 }
 
-const inet::Coord& CarlaInetMobility::getCurrentAcceleration()
+const inet::Coord& CarlanetMobility::getCurrentAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }
 
-const inet::Quaternion& CarlaInetMobility::getCurrentAngularPosition()
+const inet::Quaternion& CarlanetMobility::getCurrentAngularPosition()
 {
     return lastOrientation;
 }
 
-const inet::Quaternion& CarlaInetMobility::getCurrentAngularVelocity()
+const inet::Quaternion& CarlanetMobility::getCurrentAngularVelocity()
 {
     return lastAngularVelocity;
 }
 
-const inet::Quaternion& CarlaInetMobility::getCurrentAngularAcceleration()
+const inet::Quaternion& CarlanetMobility::getCurrentAngularAcceleration()
 {
     throw cRuntimeError("Invalid operation");
 }
 
 
-void CarlaInetMobility::handleSelfMessage(cMessage* msg){
+void CarlanetMobility::handleSelfMessage(cMessage* msg){
 }

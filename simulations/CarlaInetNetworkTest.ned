@@ -13,10 +13,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package carlainet.simulations;
+package carlanetpp.simulations;
 
-import carlainet.CarlaInetManager;
-import carlainet.CarlaInetMobility;
+import carlanetpp.CarlanetManager;
+import carlanetpp.CarlanetMobility;
 import inet.node.contract.INetworkNode;
 import inet.node.base.NodeBase;
 import inet.node.inet.WirelessHost;
@@ -24,11 +24,11 @@ import inet.visualizer.contract.IIntegratedVisualizer;
 import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
 import inet.physicallayer.wireless.common.contract.packetlevel.IRadioMedium;
 
-network CarlaInetNetworkTest
+network CarlanetNetworkTest
 {
     @display("bgb=250,134");
     submodules:
-        carlaInetManager: CarlaInetManager {
+        carlanetManager: CarlanetManager {
             @display("p=122,75");
         }
         visualizer: <default(firstAvailableOrEmpty("IntegratedVisualizer"))> like IIntegratedVisualizer if typename != "" {
@@ -43,7 +43,7 @@ network CarlaInetNetworkTest
         
         
         car: NodeBase {
-            mobility.typename = "CarlaInetMobility";
+            mobility.typename = "CarlanetMobility";
             @display("p=55.89,39.329998");
         }
         

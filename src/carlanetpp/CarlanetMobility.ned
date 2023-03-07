@@ -13,13 +13,13 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package carlainet;
+package carlanetpp;
 
 import inet.mobility.base.MobilityBase;
 //
 // TODO auto-generated module
 //
-simple CarlaInetMobility extends MobilityBase {
+simple CarlanetMobility extends MobilityBase {
 	parameters:
         @class(CarlaInetMobility);
         @display("i=block/cogwheel");

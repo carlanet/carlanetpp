@@ -10,7 +10,8 @@ cleanall: checkmakefiles
 	rm -f src/Makefile
 
 makefiles:
-	cd src && opp_makemake -f --deep
+	cd src && opp_makemake -f --deep -O out -KINET4_4_PROJ=../../inet -KSIMU5G_PROJ=../../Simu5G -DINET_IMPORT -I$$\(INET4_4_PROJ\)/src -I$$\(SIMU5G_PROJ\)/src -L$$\(INET4_4_PROJ\)/src -L$$\(SIMU5G_PROJ\)/src -lzmq -lINET$$\(D\) -lsimu5g$$\(D\)
+
 
 checkmakefiles:
 	@if [ ! -f src/Makefile ]; then \
