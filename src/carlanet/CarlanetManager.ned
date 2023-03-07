@@ -1,4 +1,4 @@
-package carlanetpp;
+package carlanet;
 
 simple CarlanetManager
 {

@@ -1,4 +1,4 @@
-#include "../carlanetpp/CarlanetManager.h"
+#include "CarlanetManager.h"
 
 #include <stdexcept>
 
@@ -16,10 +16,12 @@
 #include "inet/common/scenario/ScenarioManager.h"
 
 
-using namespace inet;
-using namespace std;
+
 
 Define_Module(CarlanetManager);
+
+using namespace inet;
+using namespace std;
 
 CarlanetManager::CarlanetManager(){
 
@@ -97,9 +99,9 @@ void CarlanetManager::initialize(int stage)
 }
 
 
-void CarlanetManager::registerMobilityModule(CarlanetMobility *mod){
+void CarlanetManager::registerMobilityModule(CarlaInetMobility *mod){
     const char* mobileNodeName = mod->getParentModule()->getFullName();
-    modulesToTrack.insert(pair<string,CarlanetMobility*>(string(mobileNodeName), mod));
+    modulesToTrack.insert(pair<string,CarlaInetMobility*>(string(mobileNodeName), mod));
 }
 
 
@@ -238,8 +240,8 @@ void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position ne
     Coord position = Coord(newActor.position[0], newActor.position[1], newActor.position[2]);
     Coord velocity = Coord(newActor.velocity[0],newActor.velocity[1],newActor.velocity[2]);
     Quaternion rotation = Quaternion(EulerAngles(rad(newActor.rotation[0]),rad(newActor.rotation[1]),rad(newActor.rotation[2])));
-    auto CarlanetMobilityMod = check_and_cast<CarlanetMobility *>(new_mod->getSubmodule("mobility"));
-    CarlanetMobilityMod->preInitialize(position, velocity, rotation);
+    auto CarlaInetMobilityMod = check_and_cast<CarlaInetMobility *>(new_mod->getSubmodule("mobility"));
+    CarlaInetMobilityMod->preInitialize(position, velocity, rotation);
 
     // The INET visualizer listens to model change notifications on the
     // network object by default. We assume this is our parent.

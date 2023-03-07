@@ -15,8 +15,8 @@
 
 package carlanetpp.simulations;
 
-import carlanetpp.CarlanetManager;
-import carlanetpp.CarlanetMobility;
+import carlanet.CarlanetppManager;
+import carlanet.CarlanetppMobility;
 import inet.node.contract.INetworkNode;
 import inet.node.base.NodeBase;
 import inet.node.inet.WirelessHost;
@@ -24,11 +24,11 @@ import inet.visualizer.contract.IIntegratedVisualizer;
 import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;
 import inet.physicallayer.wireless.common.contract.packetlevel.IRadioMedium;
 
-network CarlanetNetworkTest
+network CarlanetppNetworkTest
 {
     @display("bgb=250,134");
     submodules:
-        carlanetManager: CarlanetManager {
+        carlanetppManager: CarlanetppManager {
             @display("p=122,75");
         }
         visualizer: <default(firstAvailableOrEmpty("IntegratedVisualizer"))> like IIntegratedVisualizer if typename != "" {
@@ -42,9 +42,9 @@ network CarlanetNetworkTest
         }
         
         
-        car: NodeBase {
-            mobility.typename = "CarlanetMobility";
-            @display("p=55.89,39.329998");
-        }
+        //car: NodeBase {
+        //    mobility.typename = "CarlanetppMobility";
+        //    @display("p=55.89,39.329998");
+        //}
         
 }

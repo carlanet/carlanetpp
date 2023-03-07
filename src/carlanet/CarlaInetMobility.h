@@ -14,8 +14,8 @@
 // 
 
 
-#ifndef CARLANETMOBILITY_H_
-#define CARLANETMOBILITY_H_
+#ifndef CARLANETPPMOBILITY_H_
+#define CARLANETPPMOBILITY_H_
 
 
 #include <omnetpp.h>
@@ -27,7 +27,7 @@ using namespace std;
 /**
  * TODO - Generated class
  */
-class CarlanetMobility : public inet::MobilityBase
+class CarlaInetMobility : public inet::MobilityBase
 {
 public:
     /** @brief called by class CarlaCommunicationManager */

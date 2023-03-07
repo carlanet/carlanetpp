@@ -16,8 +16,8 @@
 
 #include "omnetpp.h"
 
-#include "../carlanetpp/carlaApi.h"
-#include "../carlanetpp/CarlanetMobility.h"
+#include "carlanet/carlaApi.h"
+#include "CarlaInetMobility.h"
 #include "inet/common/INETDefs.h"
 
 using namespace std;
@@ -39,7 +39,7 @@ public:
     simtime_t getCarlaInitialCarlaTimestamp() { return initial_timestamp; }
 
 
-    void registerMobilityModule(CarlanetMobility *mod);
+    void registerMobilityModule(CarlaInetMobility *mod);
 
     //API used by applications
 
@@ -88,7 +88,7 @@ private:
     zmq::socket_t socket;
     int timeout_ms;
     cMessage *simulationTimeStepEvent =  new cMessage("simulationTimeStep");
-    map<string,CarlanetMobility*> modulesToTrack = map<string,CarlanetMobility*>();
+    map<string,CarlaInetMobility*> modulesToTrack = map<string,CarlaInetMobility*>();
 
 
     //Handlers for dynamic actor creation/destroying
