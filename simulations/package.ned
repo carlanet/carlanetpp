@@ -1,3 +1,3 @@
-package carlainet.simulations;
+package carlanetpp.simulations;
 
 @license(LGPL);
