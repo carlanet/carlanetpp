@@ -17,6 +17,8 @@
 
 #include "carlanet/CarlanetManager.h"
 
+#include "carlanet/utils.h"
+
 Define_Module(CarlaInetMobility);
 
 void CarlaInetMobility::initialize(int stage)
@@ -25,7 +27,7 @@ void CarlaInetMobility::initialize(int stage)
     if (stage == inet::INITSTAGE_LOCAL){
         carlaActorType = par("carlaActorType").stdstringValue();
         carlaActorConfiguration = check_and_cast<cValueMap*>(par("carlaActorConfiguration").objectValue()); //.cValueMap(); // .objectValue();
-        auto carlaManager = check_and_cast<CarlanetManager*>(getModuleByPath("<root>.CarlanetManager"));
+        auto carlaManager = getFirstSubmoduleOfType<CarlanetManager>(getModuleByPath("<root>"));
         // register to carlaManager
         carlaManager->registerMobilityModule(this);
     }

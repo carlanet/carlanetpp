@@ -18,7 +18,7 @@
 
 #include <omnetpp.h>
 #include "inet/common/InitStages.h"
-#include "../carlanetpp/carlanet.h"
+#include "carlanet/carlanet.h"
 
 using namespace omnetpp;
 

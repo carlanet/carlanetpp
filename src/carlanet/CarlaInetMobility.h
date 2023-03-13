@@ -1,3 +1,4 @@
+
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
@@ -14,8 +15,8 @@
 // 
 
 
-#ifndef CARLANETPPMOBILITY_H_
-#define CARLANETPPMOBILITY_H_
+#ifndef CARLAINETMOBILITY_H_
+#define CARLAINETMOBILITY_H_
 
 
 #include <omnetpp.h>
@@ -63,13 +64,10 @@ protected:
     /** @brief The last angular velocity that was set by nextPosition(). */
     inet::Quaternion lastAngularVelocity;
 
-private:
     string carlaActorType;
     cValueMap* carlaActorConfiguration;
     bool preInitialized = false;  // this field is set during dynamic module creation
 
-//private:
-//    CarlaCommunicationManager *manager = nullptr;
 };
 
 #endif

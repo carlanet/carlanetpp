@@ -62,11 +62,11 @@ namespace carla_api{
     struct init_completed {
         std::string message_type = "INIT_COMPLETED";
         double initial_timestamp;
-        std::list<carla_api_base::actor_position> actors_positions;
+        std::list<carla_api_base::actor_position> actor_positions;
         //carla_api_payload::init_completed payload;
         int simulation_status;
     };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(init_completed, message_type, initial_timestamp, actors_positions, simulation_status)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(init_completed, message_type, initial_timestamp, actor_positions, simulation_status)
 
 
     /* OMNET --> CARLA*/
@@ -81,10 +81,10 @@ namespace carla_api{
     /* CARLA --> OMNET */
     struct updated_postion {
         std::string message_type = "UPDATED_POSITIONS";
-        std::list<carla_api_base::actor_position> actors_positions;
+        std::list<carla_api_base::actor_position> actor_positions;
         int simulation_status;
     };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(updated_postion, message_type, actors_positions, simulation_status)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(updated_postion, message_type, actor_positions, simulation_status)
 
 
     struct generic_message {
@@ -97,9 +97,9 @@ namespace carla_api{
 
     struct generic_response {
         std::string message_type = "GENERIC_RESPONSE";
-        json user_defined_response;
+        json user_defined;
         int simulation_status;
     };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_response, message_type, user_defined_response ,simulation_status)
+    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(generic_response, message_type, user_defined ,simulation_status)
 
 }

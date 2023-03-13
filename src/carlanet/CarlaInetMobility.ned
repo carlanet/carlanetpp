@@ -19,7 +19,7 @@ import inet.mobility.base.MobilityBase;
 //
 // TODO auto-generated module
 //
-simple CarlanetMobility extends MobilityBase {
+simple CarlaInetMobility extends MobilityBase {
 	parameters:
         @class(CarlaInetMobility);
         @display("i=block/cogwheel");
@@ -30,9 +30,5 @@ simple CarlanetMobility extends MobilityBase {
         string carlaActorType = default("car");
         
         object carlaActorConfiguration = default(parseJSON("{'test':'1'}"));
-        
-        //Specify the name of the route, <empty string> means that the route is randomly defined by Carla
-        //string route = default("");   
-        
         
 }

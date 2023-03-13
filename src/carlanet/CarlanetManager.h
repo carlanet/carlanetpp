@@ -1,5 +1,5 @@
-#ifndef __CARLACOMMUNICATIONMANAGER_H_
-#define __CARLACOMMUNICATIONMANAGER_H_
+#ifndef __CARLANETMANAGER_H_
+#define __CARLANETMANAGER_H_
 
 #include <string>
 #include <list>
@@ -41,21 +41,7 @@ public:
 
     void registerMobilityModule(CarlaInetMobility *mod);
 
-    //API used by applications
 
-    /**
-     * This is a generic API that accepts and return json type
-     */
-    json sendToAndGetFromCarla(json requestMessage);
-
-    /*
-     * Variants of the API using templates
-     * IMPORTANT the type must implement "to_json" and "from_json" as specified
-     * by the "nlohmann/json" library
-     */
-    template<typename S> json sendToAndGetFromCarla(S requestMessage);
-    template<typename T> T sendToAndGetFromCarla(json requestMessage);
-    template<typename S, typename T> T sendToAndGetFromCarla(S requestMessage);
 
 
 protected:
@@ -64,6 +50,13 @@ protected:
     virtual void handleMessage(cMessage *msg) override;
     virtual void finish() override;
 
+    /**
+     * This base implementation gets CARLA extra initialization parameters directly from
+     * extraInitParams parameters of the module. This method could be override to be more
+     * tailored to specific configuration and parameters' set
+     */
+    virtual const std::map<std::string,cValue>& getExtraInitParams();
+
 private:
     void connect();
     void doSimulationTimeStep();
@@ -71,10 +64,19 @@ private:
     void findModulesToTrack();
     void updateNodesPosition(std::list<carla_api_base::actor_position> actor);
 
-    void sendToCarla(json msg);
+    void sendToCarla(json jsonMsg){
+        std::stringstream msg;
+        //    msg << jsonMsg.dump();
+        socket.send(zmq::buffer(jsonMsg.dump()), zmq::send_flags::none);
+    }
+    json receiveFromCarla(double timeoutFactor);
 
-    json receiveFromCarla(double timeoutFactor = 1);
-    template<typename T> T receiveFromCarla(double timeoutFactor = 1);
+
+
+    template <typename T> T receiveFromCarla(double timeoutFactor = 1){
+        return receiveFromCarla(timeoutFactor).get<T>();
+    }
+    //template<typename T> T receiveFromCarla(double timeoutFactor = 1);
 
 
     bool connection;
@@ -82,7 +84,6 @@ private:
     string host;
     double simulationTimeStep;
     simtime_t initial_timestamp = 0;
-    int seed;
     int port;
     zmq::context_t context;
     zmq::socket_t socket;
@@ -96,6 +97,37 @@ private:
     void destroyActor(string actorId);
     const char* networkActiveModuleType;
     const char* networkPassiveModuleType;
+
+
+public:
+    //API used by applications
+
+    /**
+     * This is a generic API that accepts and return json type
+     */
+    json sendToAndGetFromCarla(json requestMessage){
+        carla_api::generic_message toCarlaMessage;
+        toCarlaMessage.user_defined = requestMessage;
+        toCarlaMessage.timestamp = simTime().dbl();
+
+        json jsonMsg = toCarlaMessage;
+        sendToCarla(jsonMsg);
+
+        auto jsonResp = receiveFromCarla<carla_api::generic_response>(10.0);
+        return jsonResp.user_defined;
+
+    }
+    /*
+     * Variants of the API using templates
+     * IMPORTANT the type must implement "to_json" and "from_json" as specified
+     * by the "nlohmann/json" library
+     */
+    template<typename S, typename T> T sendToAndGetFromCarla(S requestMessage){
+        json jsonRequestMessage = requestMessage;
+        json jsonResponseMessage = sendToAndGetFromCarla(jsonRequestMessage);
+        return jsonResponseMessage.get<T>();
+    }
+
 };
 
 #endif

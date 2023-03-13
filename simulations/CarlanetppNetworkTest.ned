@@ -15,8 +15,8 @@
 
 package carlanetpp.simulations;
 
-import carlanet.CarlanetppManager;
-import carlanet.CarlanetppMobility;
+import carlanet.CarlanetManager;
+import carlanet.CarlaInetMobility;
 import inet.node.contract.INetworkNode;
 import inet.node.base.NodeBase;
 import inet.node.inet.WirelessHost;
@@ -28,7 +28,7 @@ network CarlanetppNetworkTest
 {
     @display("bgb=250,134");
     submodules:
-        carlanetppManager: CarlanetppManager {
+        carlanetManager: CarlanetManager {
             @display("p=122,75");
         }
         visualizer: <default(firstAvailableOrEmpty("IntegratedVisualizer"))> like IIntegratedVisualizer if typename != "" {

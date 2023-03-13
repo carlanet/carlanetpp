@@ -5,11 +5,11 @@
  *      Author: christian
  */
 
-#ifndef CARLANETPP_CARLANETPP_H_
-#define CARLANETPP_CARLANETPP_H_
+#ifndef CARLANET_CARLANET_H_
+#define CARLANET_CARLANET_H_
 
-#include "carlanetpp/CarlanetppManager.h"
-#include "CarlaInetMobility.h"
+#include "carlanet/CarlanetManager.h"
+#include "carlanet/CarlaInetMobility.h"
 #include "lib/json.hpp"
 
 using json = nlohmann::json;

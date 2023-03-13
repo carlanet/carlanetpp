@@ -36,42 +36,9 @@ void CarlanetManager::finish(){
 }
 
 
-void CarlanetManager::sendToCarla(json jsonMsg){
-    std::stringstream msg;
-    //    msg << jsonMsg.dump();
-    socket.send(zmq::buffer(jsonMsg.dump()), zmq::send_flags::none);
-}
 
-json CarlanetManager::receiveFromCarla(double timeoutFactor){
-    // set actual timeout
-    int recv_timeout_ms =  max(4000, int(timeout_ms * timeoutFactor));
-    this->socket.setsockopt(ZMQ_RCVTIMEO, recv_timeout_ms);
 
-    zmq::message_t reply{};
 
-    //assert(!socket.recv(reply, zmq::recv_flags::none));
-    if (!socket.recv(reply, zmq::recv_flags::none)){
-        throw runtime_error("CALRA Timeout");
-        //EV_ERROR << "receive error"<<endl;
-    }
-    json jsonResp = json::parse(reply.to_string());
-
-    switch (jsonResp["simulation_status"].get<int>()){
-    case SIM_STATUS_FINISHED_OK:
-    case SIM_STATUS_FINISHED_ACCIDENT:
-    case SIM_STATUS_FINISHED_TIME_LIMIT:
-        endSimulation();
-        break;
-    case SIM_STATUS_ERROR:
-        throw runtime_error("Communication error. Wrong message sequence!");
-        break;
-    }
-    return jsonResp;
-}
-
-template <typename T> T CarlanetManager::receiveFromCarla(double timeoutFactor){
-    return receiveFromCarla(timeoutFactor).get<T>();
-}
 
 
 void CarlanetManager::initialize(int stage)
@@ -85,11 +52,7 @@ void CarlanetManager::initialize(int stage)
         simulationTimeStep = par("simulationTimeStep");
 
         networkActiveModuleType = par("networkActiveModuleType").stringValue();
-        //        networkActiveModuleName = par("networkActiveModuleName").stringValue();
         networkPassiveModuleType = par("networkPassiveModuleType").stringValue();
-        //        networkPassiveModuleName = par("networkPassiveModuleName").stringValue();
-
-        //findModulesToTrack();
         connect();
     }
 
@@ -103,16 +66,6 @@ void CarlanetManager::registerMobilityModule(CarlaInetMobility *mod){
     const char* mobileNodeName = mod->getParentModule()->getFullName();
     modulesToTrack.insert(pair<string,CarlaInetMobility*>(string(mobileNodeName), mod));
 }
-
-
-//void CarlaCommunicationManager::findModulesToTrack(){
-//    auto rootModule = getModuleByPath("<root>");
-//    auto mobilityModList = getSubmodulesOfType<CarlanetMobility>(rootModule, true);
-//    for (auto mobilityMod : mobilityModList) {
-//        string nodeModuleName = mobilityMod->getParentModule()->getFullName();
-//        modulesToTrack.insert(pair<string, CarlanetMobility*>(nodeModuleName, mobilityMod));
-//    }
-//}
 
 
 void CarlanetManager::initializeCarla(){
@@ -137,7 +90,7 @@ void CarlanetManager::initializeCarla(){
     msg.carla_configuration.carla_timestep = simulationTimeStep;
     msg.carla_configuration.sim_time_limit = simTimeLimit != nullptr ? stod(simTimeLimit) : -1.0 ;
     msg.moving_actors = movingActorList;
-    msg.user_defined = check_and_cast<cValueMap*>(par("extraInitParams").objectValue())->getFields();
+    msg.user_defined = getExtraInitParams();
     msg.timestamp = simTime().dbl();
 
     json jsonMsg = msg;
@@ -148,12 +101,17 @@ void CarlanetManager::initializeCarla(){
     carla_api::init_completed response = receiveFromCarla<carla_api::init_completed>(100.0);
     // Carla informs about the intial timestamp, so I schedule the first similation step at that timestamp
     EV << "Initialization completed" << response.initial_timestamp <<  endl;
-    updateNodesPosition(response.actors_positions);
+    updateNodesPosition(response.actor_positions);
     //
     initial_timestamp = simTime() + response.initial_timestamp;
     // schedule
     scheduleAt(simTime() + response.initial_timestamp, simulationTimeStepEvent);
 }
+
+const std::map<std::string,cValue>& CarlanetManager::getExtraInitParams(){
+    return check_and_cast<cValueMap*>(par("extraInitParams").objectValue())->getFields();
+}
+
 
 void CarlanetManager::doSimulationTimeStep(){
     carla_api::simulation_step msg;
@@ -166,7 +124,7 @@ void CarlanetManager::doSimulationTimeStep(){
 
     //Update position of all nodes in response
 
-    updateNodesPosition(response.actors_positions);
+    updateNodesPosition(response.actor_positions);
 }
 
 void CarlanetManager::updateNodesPosition(std::list<carla_api_base::actor_position> actors){
@@ -266,84 +224,34 @@ void CarlanetManager::destroyActor(string actorId){
 
 }
 
-///*
-// * PUBLIC APIs
-// * */
-json CarlanetManager::sendToAndGetFromCarla(json requestMessage){
-    carla_api::generic_message toCarlaMessage;
-    toCarlaMessage.user_defined = requestMessage;
-    toCarlaMessage.timestamp = simTime().dbl();
 
-    json jsonMsg = toCarlaMessage;
-    sendToCarla(jsonMsg);
+json CarlanetManager::receiveFromCarla(double timeoutFactor){
+    // set actual timeout
+    int recv_timeout_ms =  max(4000, int(timeout_ms * timeoutFactor));
+    this->socket.setsockopt(ZMQ_RCVTIMEO, recv_timeout_ms);
 
-    auto jsonResp = receiveFromCarla<carla_api::generic_response>(10.0);
-    return jsonResp.user_defined_response;
+    zmq::message_t reply{};
 
+    //assert(!socket.recv(reply, zmq::recv_flags::none));
+    if (!socket.recv(reply, zmq::recv_flags::none)){
+        throw runtime_error("CALRA Timeout");
+        //EV_ERROR << "receive error"<<endl;
+    }
+    json jsonResp = json::parse(reply.to_string());
+
+    switch (jsonResp["simulation_status"].get<int>()){
+    case SIM_STATUS_FINISHED_OK:
+    case SIM_STATUS_FINISHED_ACCIDENT:
+    case SIM_STATUS_FINISHED_TIME_LIMIT:
+        endSimulation();
+        break;
+    case SIM_STATUS_ERROR:
+        throw runtime_error("Communication error. Wrong message sequence!");
+        break;
+    }
+    return jsonResp;
 }
 
 
-template<typename S> json CarlanetManager::sendToAndGetFromCarla(S requestMessage){
-    json jsonRequestMessage = requestMessage;
-    return sendToAndGetFromCarla(jsonRequestMessage);
-}
-template<typename T> T CarlanetManager::sendToAndGetFromCarla(json requestMessage){
-    return sendToAndGetFromCarla(requestMessage).get<T>();
-}
-template<typename S, typename T> T CarlanetManager::sendToAndGetFromCarla(S requestMessage){
-    json jsonRequestMessage = requestMessage;
-    return sendToAndGetFromCarla(jsonRequestMessage).get<T>();
-}
-
-
-
-
-//string CarlaCommunicationManager::getActorStatus(string actorId){
-//    EV_INFO << "Contact Carla for getting the status id" << endl;
-//    carla_api::vehicle_status_update msg;
-//    msg.payload.actor_id = actorId;
-//    msg.timestamp = simTime().dbl();
-//    json jsonMsg = msg;
-//    sendToCarla(jsonMsg);
-//    // I expect VEHICLE_STATUS
-//    carla_api::vehicle_status response;
-//    receiveFromCarla<carla_api::vehicle_status>(& response);
-//
-//    return response.payload.status_id;
-//}
-//
-//string CarlaCommunicationManager::computeInstruction(string actorId, string statusId, string agentId){
-//    EV_INFO << "Contact Carla for getting the instruction id" << endl;
-//    carla_api::compute_instruction msg;
-//    msg.payload.actor_id = actorId;
-//    msg.payload.agent_id = agentId;
-//    msg.payload.status_id = statusId;
-//    msg.timestamp = simTime().dbl();
-//
-//    json jsonMsg = msg;
-//    sendToCarla(jsonMsg);
-//    // I expect INSTRUCTION
-//    carla_api::instruction response;
-//    //10x is for safety, because CARLA before stops the simulation and then sends the response
-//    receiveFromCarla<carla_api::instruction>(&response, 10);
-//
-//    return response.payload.instruction_id;
-//}
-//
-//void CarlaCommunicationManager::applyInstruction(string actorId, string instructionId){
-//    EV_INFO << "Contact Carla for applying the instruction id" << endl;
-//    carla_api::apply_instruction msg;
-//    msg.payload.actor_id = actorId;
-//    msg.payload.instruction_id = instructionId;
-//    msg.timestamp = simTime().dbl();
-//
-//    json jsonMsg = msg;
-//    sendToCarla(jsonMsg);
-//    // I expect OK
-//    carla_api::ok response;
-//    receiveFromCarla<carla_api::ok>(&response);
-//
-//
-//}
 
 
