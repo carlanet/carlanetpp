@@ -29,6 +29,6 @@ simple CarlaInetMobility extends MobilityBase {
         
         string carlaActorType = default("car");
         
-        object carlaActorConfiguration = default(parseJSON("{'test':'1'}"));
+        object carlaActorConfiguration = default(parseJSON("{}"));
         
 }
