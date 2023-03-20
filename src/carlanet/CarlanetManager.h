@@ -16,7 +16,7 @@
 
 #include "omnetpp.h"
 
-#include "carlanet/carlaApi.h"
+#include "carlaApi.h"
 #include "CarlaInetMobility.h"
 #include "inet/common/INETDefs.h"
 

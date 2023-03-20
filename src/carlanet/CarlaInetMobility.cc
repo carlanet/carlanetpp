@@ -13,11 +13,11 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include "carlanet/CarlaInetMobility.h"
+#include "CarlaInetMobility.h"
 
-#include "carlanet/CarlanetManager.h"
+#include "CarlanetManager.h"
 
-#include "carlanet/utils.h"
+#include "utils.h"
 
 Define_Module(CarlaInetMobility);
 
