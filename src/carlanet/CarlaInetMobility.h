@@ -51,7 +51,7 @@ public:
 
     // access to members
     string getCarlaActorType(){return carlaActorType;}
-    cValueMap* getCarlaActorConfiguration(){return carlaActorConfiguration;}
+    const cValueMap* getCarlaActorConfiguration(){return carlaActorConfiguration;}
 
 protected:
     /** This must be implemented as described in MobilityBase*/
@@ -59,14 +59,21 @@ protected:
 
     virtual void setInitialPosition() override;
 
+    virtual void updateCarlaActorConfigurationFromParam(cValueMap *confMap) {};
+
     /** @brief The last velocity that was set by nextPosition(). */
     inet::Coord lastVelocity;
     /** @brief The last angular velocity that was set by nextPosition(). */
     inet::Quaternion lastAngularVelocity;
 
     string carlaActorType;
-    cValueMap* carlaActorConfiguration;
+
     bool preInitialized = false;  // this field is set during dynamic module creation
+
+
+protected:
+    cValueMap *carlaActorConfiguration;
+
 
 };
 
