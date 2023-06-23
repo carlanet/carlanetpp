@@ -12,6 +12,8 @@ cleanall: checkmakefiles
 makefiles:
 	cd src && opp_makemake -f --make-so --deep -o carlanet -O out -KINET4_4_PROJ=../../inet4.4 -DINET_IMPORT -I$$\(INET4_4_PROJ\)/src -L$$\(INET4_4_PROJ\)/src -lzmq -lINET$$\(D\)
 
+makexamples:
+	cd examples && opp_makemake -f --deep -o carlanet -O out -KCARLANETPP_PROJ=.. -KINET4_4_PROJ=../../inet4.4 -DINET_IMPORT -I$$\(INET4_4_PROJ\)/src -I$$\(CARLANETPP_PROJ\)/src -L$$\(INET4_4_PROJ\)/src -L$$\(CARLANETPP_PROJ\)/src -lzmq -lcarlanet$$\(D\) -lINET$$\(D\) &&  $(MAKE)
 
 checkmakefiles:
 	@if [ ! -f src/Makefile ]; then \

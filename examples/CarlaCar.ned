@@ -13,14 +13,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
+package tod_network.nodes;
 
-import inet.applications.contract.IApp;
-//
-// TODO auto-generated module
-//
-simple TestApp like IApp
+import simu5g.nodes.NR.NRUe;
+
+module CarlaCar extends NRUe
 {
-    gates:
-        input socketIn;
-        output socketOut;
+    parameters:
+        mobility.typename = default("TodCarlaInetMobility");
+
+        @display("i=misc/car,,0;is=n");
 }
