@@ -6,8 +6,8 @@
 //
 
 
-#include "CarlaAgentApp.h"
-
+#include "carlanet/lightcontrol/CarlaAgentApp.h"
+#include "carlanet/lightcontrol/Messages_m.h"
 #include <math.h>
 
 
@@ -40,6 +40,9 @@ void CarlaAgentApp::initialize(int stage)
 {
     ApplicationBase::initialize(stage);
     if (stage == INITSTAGE_LOCAL) {
+        carlanetManager = check_and_cast<CarlanetManager*>(getParentModule()->getParentModule()->getSubmodule("carlanetManager"));
+        firstCommandMsg = new cMessage("firstCommandMsg");
+        commandStartTime = par("sendInterval");
         /*actorId = getParentModule()->getName();
         carlaCommunicationManager = check_and_cast<TodCarlanetManager*>(
                 getParentModule()->getParentModule()->getSubmodule("carlaCommunicationManager"));
@@ -76,7 +79,10 @@ void CarlaAgentApp::handleStartOperation(LifecycleOperation *operation)
 
     //EV_INFO << "First update will be at: " << firstStatusUpdate << endl;
 
-    //scheduleAt(firstStatusUpdate, updateStatusSelfMessage);
+    simtime_t firstCommandTime = simTime() + carlanetManager->getCarlaInitialCarlaTimestamp() + commandStartTime;
+
+
+    scheduleAt(firstCommandTime, firstCommandMsg);
 }
 
 
@@ -95,26 +101,21 @@ void CarlaAgentApp::handleCrashOperation(LifecycleOperation *operation)
 
 void CarlaAgentApp::handleMessageWhenUp(cMessage* msg){
 
-    /*if (msg->isSelfMessage()){
+    if (msg->isSelfMessage()){
 
-        if (msg == updateStatusSelfMessage){
-            retrieveStatusData();
+        if (msg == firstCommandMsg){
+            sendNewLightCommand();
             //sendUpdateStatusPacket();
             // this time contains all the parameters needed to generate status message, TODO: create ad hoc message
             // Note, you have to add the same time for all the UDP pkt of one frame
-            scheduleAfter(statusUpdateInterval, msg);
+            //scheduleAfter(commandUpdateInterval, msg);
 
-        }
-        else if (msg->getKind() == CREATION_STATUS_DATA_MSG_KIND) {
-            sendUpdateStatusPacket(simTime());
         }
     }else if(socket.belongsToSocket(msg)){
             socket.processMessage(msg);
-    }*/
+    }
 
 }
-
-
 
 
 void CarlaAgentApp::socketDataArrived(UdpSocket *socket, Packet *packet){
@@ -142,18 +143,34 @@ void CarlaAgentApp::sendPacket(Packet *packet){
 
 
 void CarlaAgentApp::processPacket(Packet *pk){
-    /*if (pk->hasData<TODMessage>()){
-        if (pk->peekData<TODMessage>()->getMessageType() == TODMessageType::INSTRUCTION){
-            //CARLA apply instruction
-            auto message = pk->peekData<TodInstructionMessage>();
-            carlaCommunicationManager->applyInstruction(message->getActorId(), message->getInstructionId());
-        }
-        else{
-            EV_WARN << "Received an unexpected TOD Message " <<  pk->peekData<TODMessage>()->getMessageType()  << " check your implementation"<< endl;
-        }
+
+    if (pk->hasData<LightStatusMessage>()){
+        auto message_sp = pk->peekData<LightStatusMessage>();
+        EV_INFO << "Received a new light status: " << message_sp->getLightCurrState() << endl;
+
+        current_light_state = message_sp->getLightCurrState();
+        sendNewLightCommand();
     }
-    else{
+    else {
         EV_WARN << "Received an unexpected packet "<< UdpSocket::getReceivedPacketInfo(pk) <<endl;
-    }*/
+    }
+}
+
+void CarlaAgentApp::sendNewLightCommand(){
+    EV_INFO << "Send status update" << endl;
+
+    light_update lightStateMsg;
+    lightStateMsg.light_curr_state = current_light_state;
+
+    auto lightCommandMsg = carlanetManager->sendToAndGetFromCarla<light_update, light_command>(lightStateMsg);
+    const int fragmentLength = std::min((int) par("commandMsgLength"), (int) UDP_MAX_MESSAGE_SIZE-10);
+    auto packet = new Packet("LightCommand_");
+    auto data = makeShared<LightCommandMessage>();
+    data->setChunkLength(B(fragmentLength));
+    data->setLightNextState(lightCommandMsg.light_next_state.c_str());
+    auto creationTimeTag = data->addTag<CreationTimeTag>(); // add new tag
+    creationTimeTag->setCreationTime(simTime()); // store current time
+    packet->insertAtBack(data);
+    socket.sendTo(packet, destAddress, destPort);
 }
 

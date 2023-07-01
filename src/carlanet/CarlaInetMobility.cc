@@ -24,6 +24,7 @@ Define_Module(CarlaInetMobility);
 void CarlaInetMobility::initialize(int stage)
 {
     MobilityBase::initialize(stage);
+
     if (stage == inet::INITSTAGE_LOCAL){
         carlaActorType = par("carlaActorType").stdstringValue();
         carlaActorConfiguration = check_and_cast<cValueMap*>(par("carlaActorConfiguration").objectValue()); //.cValueMap(); // .objectValue();

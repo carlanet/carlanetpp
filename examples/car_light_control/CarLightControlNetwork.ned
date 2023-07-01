@@ -34,7 +34,7 @@ network CarLightControlNetwork
             @display("p=450,325");
         }
 
-        carlaNetManager: CarlanetManager {
+        carlanetManager: CarlanetManager {
             @display("p=361.872,224.78401");
         }
 

@@ -6,8 +6,8 @@
 //
 
 
-#ifndef __CarlaAgentApp_H
-#define __CarlaAgentApp_H
+#ifndef __CarlaCarApp_H
+#define __CarlaCarApp_H
 
 #include <vector>
 #include <omnetpp.h>
@@ -16,28 +16,29 @@
 #include "inet/transportlayer/contract/udp/UdpSocket.h"
 #include "inet/applications/base/ApplicationBase.h"
 
+#include "carlanet/CarlanetManager.h"
+#include "carlanet/lightcontrol/CarlaMessages.h"
+
 using namespace omnetpp;
 using namespace inet;
 
 /**
  * UDP application. See NED for more info.
  */
-class CarlaAgentApp : public ApplicationBase, public UdpSocket::ICallback
+class CarlaCarApp : public ApplicationBase, public UdpSocket::ICallback
 {
 
 private:
-    //CarlanetManager* carlaCommunicationManager;
+    CarlanetManager* carlanetManager;
     //cMessage* updateStatusSelfMessage;
-    double statusUpdateInterval;
-    //const char *actorId;
+
 
 protected:
     UdpSocket socket;
     L3Address destAddress;
     int destPort;
     // statistics
-    int numSent = 0;
-    int numReceived = 0;
+
 
 
 protected:
@@ -77,7 +78,7 @@ protected:
     virtual void processPacket(Packet *pk);
 
 public:
-    ~CarlaAgentApp();
+    ~CarlaCarApp();
 
 
 };

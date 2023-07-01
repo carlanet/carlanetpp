@@ -36,11 +36,6 @@ void CarlanetManager::finish(){
 }
 
 
-
-
-
-
-
 void CarlanetManager::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
