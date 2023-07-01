@@ -1,9 +1,8 @@
 /*
- * utils.h
- *
- *  Created on: Jul 27, 2022
- *      Author: christian
- */
+MIT License
+Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+*/
+
 
 #ifndef CARLANET_UTILS_H_
 #define CARLANET_UTILS_H_

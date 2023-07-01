@@ -1,4 +1,4 @@
-package carlanetpp.examples.car_light_control;
+package carlanetpp.simulations;
 
 
 import inet.networklayer.configurator.ipv4.Ipv4NetworkConfigurator;

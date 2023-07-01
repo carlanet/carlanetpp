@@ -1,9 +1,6 @@
-/*
- * carlainet.h
- *
- *  Created on: Sep 9, 2022
- *      Author: christian
- */
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
 
 #ifndef CARLANET_CARLANET_H_
 #define CARLANET_CARLANET_H_

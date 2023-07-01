@@ -1,3 +1,5 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
 
 import inet.common.INETDefs;
 import inet.common.Units;

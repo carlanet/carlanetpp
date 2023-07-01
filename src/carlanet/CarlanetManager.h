@@ -1,3 +1,7 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
+
 #ifndef __CARLANETMANAGER_H_
 #define __CARLANETMANAGER_H_
 

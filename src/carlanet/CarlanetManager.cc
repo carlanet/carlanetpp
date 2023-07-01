@@ -1,3 +1,7 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
+
 #include "CarlanetManager.h"
 
 #include <stdexcept>

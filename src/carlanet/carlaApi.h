@@ -1,3 +1,7 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
+
 #include "../lib/json.hpp"
 
 using json = nlohmann::json;

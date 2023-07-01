@@ -1,3 +1,6 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
 package carlanet.lightcontrol;
 import inet.applications.contract.IApp;
 

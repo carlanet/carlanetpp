@@ -1,9 +1,5 @@
-//
-// Copyright (C) 2000 Institut fuer Telematik, Universitaet Karlsruhe
-// Copyright (C) 2004,2011 OpenSim Ltd.
-//
-// SPDX-License-Identifier: LGPL-3.0-or-later
-//
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
 
 
 #include "carlanet/lightcontrol/CarlaAgentApp.h"

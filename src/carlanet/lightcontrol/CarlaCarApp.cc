@@ -1,9 +1,6 @@
-//
-// Copyright (C) 2000 Institut fuer Telematik, Universitaet Karlsruhe
-// Copyright (C) 2004,2011 OpenSim Ltd.
-//
-// SPDX-License-Identifier: LGPL-3.0-or-later
-//
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/transportlayer/common/L4PortTag_m.h"
 
@@ -23,8 +20,7 @@
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/transportlayer/udp/Udp.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
-//#include "carla_omnet/TodCarlanetManager.h"
-//#include "messages/TodMessages_m.h"
+
 
 using namespace omnetpp;
 using namespace inet;
