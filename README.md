@@ -44,11 +44,9 @@ There are three types of messages:
 
 - **SIMULATION STEP**: It is the message used to keep the co-simulation (in terms of time) consistent. This message is sent for each simulation time step defined in CarlanetManager "simulationTimeStep". [pyCARLANeT](https://github.com/carlanet/pycarlanet) waits for this message to perform a simulation step. The simulation time step parameter is sent during the initialization phase and is set accordingly in CARLA settings to ensure consistency between the two worlds.
 
-- **GENERIC MESSAGE**: It is the custom message defined by the devoper of the application. All the custom message of the aplpication fall in this set of messages. It is generally used to communicate to the python application of carla which a message is received by an actor.
+- **GENERIC MESSAGE**: Refers to the custom message defined by the developer of the application. It Includes all application-specific custom messages. This message type is generally used to communicate to the Python application of CARLA that a message has been received by an actor.
 
-- **Generic Message**: Refers to the custom message defined by the developer of the application. It encompasses all the custom messages specific to the application. This message type is generally used to communicate to the Python application of CARLA that a message has been received by an actor.
-
-To see an example of the usage of the Generic Message, please refer to the `car-light-control` example.
+To see an example of the usage of the Generic Message, please refer to the [`car-light-control` example](https://github.com/carlanet/carlanetpp/tree/main/src/carlanet/lightcontrol).
 
 
 ## Example
