@@ -1,18 +1,5 @@
-
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
 
 
 #ifndef CARLAINETMOBILITY_H_
@@ -25,56 +12,71 @@
 using namespace omnetpp;
 using namespace std;
 
-/**
- * TODO - Generated class
+/*
+ * This class provides additional functionality for handling Carla actors in the INET framework.
+ * It defines methods to initialize the position, velocity, and rotation of the actor,
+ * update their values for the next step, and retrieve information about the actor's position, velocity, and acceleration.
+ * The class also includes methods to get the type of the Carla actor and retrieve the configuration parameters specific to the actor.
+ *
+ * It is mandatory to set the mobilityType for Carla mobile actors in order to properly configure their mobility behavior.
  */
+
 class CarlaInetMobility : public inet::MobilityBase
 {
 public:
-    /** @brief called by class CarlaCommunicationManager */
-    virtual void preInitialize(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation);
+    // Initialize the position, velocity, and rotation of the actor.
+    virtual void preInitialize(const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
+
+    // Overrides the base class function to perform initialization tasks at a specified stage.
     virtual void initialize(int stage) override;
 
+    // Update the position, velocity, and rotation of the actor for the next step.
+    virtual void nextPosition(const inet::Coord& position, const inet::Coord& velocity, const inet::Quaternion& rotation);
 
-    /** @brief called by class CarlaCommunicationManager */
-    virtual void nextPosition(const inet::Coord& position, const inet::Coord& velocity,  const inet::Quaternion& rotation);
-
-
+    // Returns the current position of the actor.
     virtual const inet::Coord& getCurrentPosition() override;
+
+    // Returns the current velocity of the actor.
     virtual const inet::Coord& getCurrentVelocity() override;
+
+    // Returns the current acceleration of the actor.
     virtual const inet::Coord& getCurrentAcceleration() override;
 
+    // Returns the current angular position of the actor.
     virtual const inet::Quaternion& getCurrentAngularPosition() override;
+
+    // Returns the current angular velocity of the actor.
     virtual const inet::Quaternion& getCurrentAngularVelocity() override;
+
+    // Returns the current angular acceleration of the actor.
     virtual const inet::Quaternion& getCurrentAngularAcceleration() override;
 
+    // Returns the type of the Carla actor.
+    string getCarlaActorType() { return carlaActorType; }
 
-    // access to members
-    string getCarlaActorType(){return carlaActorType;}
-    const cValueMap* getCarlaActorConfiguration(){return carlaActorConfiguration;}
+    // Returns the configuration parameters of the Carla actor.
+    // This method is used by the CarlanetManager to retrieve the configuration for a specific actor that needs to be sent to pycarlanet.
+    const cValueMap* getCarlaActorConfiguration() { return carlaActorConfiguration; }
 
 protected:
-    /** This must be implemented as described in MobilityBase*/
-    virtual void handleSelfMessage(cMessage *msg) override;
+    // This must be implemented as described in MobilityBase.
+    virtual void handleSelfMessage(cMessage* msg) override;
 
+    // Overrides the base class function to set the initial position of the actor.
     virtual void setInitialPosition() override;
 
-    virtual void updateCarlaActorConfigurationFromParam(cValueMap *confMap) {};
+    // Updates the Carla actor configuration from parameter values.
+    virtual void updateCarlaActorConfigurationFromParam(cValueMap* confMap) {};
 
-    /** @brief The last velocity that was set by nextPosition(). */
     inet::Coord lastVelocity;
-    /** @brief The last angular velocity that was set by nextPosition(). */
     inet::Quaternion lastAngularVelocity;
 
     string carlaActorType;
 
-    bool preInitialized = false;  // this field is set during dynamic module creation
-
+    bool preInitialized = false; // This field is set during dynamic module creation.
 
 protected:
-    cValueMap *carlaActorConfiguration;
-
-
+    cValueMap* carlaActorConfiguration;
 };
 
 #endif

@@ -1,3 +1,7 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
+
 #include "CarlanetManager.h"
 
 #include <stdexcept>
@@ -11,11 +15,7 @@
 #include "inet/networklayer/common/FragmentationTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
-
-
 #include "inet/common/scenario/ScenarioManager.h"
-
-
 
 
 Define_Module(CarlanetManager);
@@ -34,11 +34,6 @@ CarlanetManager::~CarlanetManager(){
 void CarlanetManager::finish(){
 
 }
-
-
-
-
-
 
 
 void CarlanetManager::initialize(int stage)

@@ -1,3 +1,10 @@
+// MIT License
+// Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
+
+/*
+ * Messages exchanged between carlanetpp and pycarlanet
+ */
+
 #include "../lib/json.hpp"
 
 using json = nlohmann::json;
