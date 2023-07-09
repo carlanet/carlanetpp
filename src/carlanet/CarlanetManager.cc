@@ -15,11 +15,7 @@
 #include "inet/networklayer/common/FragmentationTag_m.h"
 #include "inet/networklayer/common/L3AddressResolver.h"
 #include "inet/transportlayer/contract/udp/UdpControlInfo_m.h"
-
-
 #include "inet/common/scenario/ScenarioManager.h"
-
-
 
 
 Define_Module(CarlanetManager);

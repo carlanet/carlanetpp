@@ -8,10 +8,10 @@ simple CarlanetManager
     parameters:
         @class(CarlanetManager);
 
-        string host = default("localhost");  // server hostname
-        string protocol = default("tcp");  // server hostname
+        string host = default("localhost");  // pyCARLANeT server hostname
+        string protocol = default("tcp");  // pyCARLANeT server protocol
         double simulationTimeStep @unit("s") = default(10ms);
-        int port = default(5555);  // server port (-1: automatic)
+        int port = default(5555);  // pyCARLANeT server port
         //int seed = default(-1); // seed value to set in launch configuration, if missing (-1: current run number)
         int communicationTimeoutms = default(1000);
         //bool autoShutdown = default(true);  // Shutdown module as soon as no more vehicles are in the simulation

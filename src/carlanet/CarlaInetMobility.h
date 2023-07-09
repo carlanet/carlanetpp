@@ -12,6 +12,15 @@
 using namespace omnetpp;
 using namespace std;
 
+/*
+ * This class provides additional functionality for handling Carla actors in the INET framework.
+ * It defines methods to initialize the position, velocity, and rotation of the actor,
+ * update their values for the next step, and retrieve information about the actor's position, velocity, and acceleration.
+ * The class also includes methods to get the type of the Carla actor and retrieve the configuration parameters specific to the actor.
+ *
+ * It is mandatory to set the mobilityType for Carla mobile actors in order to properly configure their mobility behavior.
+ */
+
 class CarlaInetMobility : public inet::MobilityBase
 {
 public:

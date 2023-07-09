@@ -1,6 +1,9 @@
 // MIT License
 // Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
 
+/*
+ * Class that implements the logic of the communication between CARLA (pyCARLANeT) and OMNeT++ (CARLANeTpp)
+ */
 
 #ifndef __CARLANETMANAGER_H_
 #define __CARLANETMANAGER_H_
@@ -46,8 +49,6 @@ public:
     void registerMobilityModule(CarlaInetMobility *mod);
 
 
-
-
 protected:
     virtual int numInitStages() const override { return inet::NUM_INIT_STAGES; }
     virtual void initialize(int stage) override;
@@ -70,18 +71,14 @@ private:
 
     void sendToCarla(json jsonMsg){
         std::stringstream msg;
-        //    msg << jsonMsg.dump();
         socket.send(zmq::buffer(jsonMsg.dump()), zmq::send_flags::none);
     }
+
     json receiveFromCarla(double timeoutFactor);
-
-
 
     template <typename T> T receiveFromCarla(double timeoutFactor = 1){
         return receiveFromCarla(timeoutFactor).get<T>();
     }
-    //template<typename T> T receiveFromCarla(double timeoutFactor = 1);
-
 
     bool connection;
     string protocol;
@@ -105,7 +102,6 @@ private:
 
 public:
     //API used by applications
-
     /**
      * This is a generic API that accepts and return json type
      */
@@ -121,6 +117,7 @@ public:
         return jsonResp.user_defined;
 
     }
+
     /*
      * Variants of the API using templates
      * IMPORTANT the type must implement "to_json" and "from_json" as specified
