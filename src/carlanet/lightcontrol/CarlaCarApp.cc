@@ -4,8 +4,8 @@
 #include "inet/networklayer/common/L3AddressTag_m.h"
 #include "inet/transportlayer/common/L4PortTag_m.h"
 
-#include "carlanet/lightcontrol/CarlaCarApp.h"
-#include "carlanet/lightcontrol/Messages_m.h"
+#include "../lightcontrol/CarlaCarApp.h"
+#include "../lightcontrol/Messages_m.h"
 
 #include <math.h>
 

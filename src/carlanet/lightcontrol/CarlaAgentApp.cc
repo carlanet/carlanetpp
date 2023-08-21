@@ -2,8 +2,8 @@
 // Copyright (c) 2023 Valerio Cislaghi, Christian Quadri
 
 
-#include "carlanet/lightcontrol/CarlaAgentApp.h"
-#include "carlanet/lightcontrol/Messages_m.h"
+#include "CarlaAgentApp.h"
+#include "Messages_m.h"
 #include <math.h>
 
 

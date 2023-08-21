@@ -13,8 +13,8 @@
 #include "inet/transportlayer/contract/udp/UdpSocket.h"
 #include "inet/applications/base/ApplicationBase.h"
 
-#include "carlanet/CarlanetManager.h"
-#include "carlanet/lightcontrol/CarlaMessages.h"
+#include "../CarlanetManager.h"
+#include "../lightcontrol/CarlaMessages.h"
 
 
 using namespace omnetpp;
