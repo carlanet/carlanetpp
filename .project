@@ -3,8 +3,9 @@
 	<name>carlanetpp</name>
 	<comment></comment>
 	<projects>
-		<project>inet</project>
-		<project>Simu5G</project>
+		<project>inet-4.6.0</project>
+		<project>simu5g-1.4.3</project>
+		<project>tod-omnet</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
