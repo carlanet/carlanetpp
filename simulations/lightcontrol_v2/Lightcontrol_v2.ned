@@ -30,7 +30,7 @@ network Lightcontrol_v2
 {
     parameters:
         @display("bgb=800,400;bgg=100,1,grey95");
-        @figure[title](type=label; pos=0,-1; anchor=sw; color=darkblue);
+        @figure[title](type=label; pos=0,-1; anchor=sw; color=darkblue; text="Car Light Control Network");
 
     submodules:
 

@@ -12,7 +12,7 @@ network CarLightControlNetwork
 {
     parameters:
         @display("bgb=650,500;bgg=100,1,grey95");
-        @figure[title](type=label; pos=0,-1; anchor=sw; color=darkblue);
+        @figure[title](type=label; pos=0,-1; anchor=sw; color=darkblue; text="Car Light Control Network");
 
         @figure[rcvdPkText](type=indicatorText; pos=380,20; anchor=w; font=,18; textFormat="packets received: %g"; initialValue=0);
         @statistic[packetReceived](source=carlaNodeCar.app[0].packetReceived; record=figure(count); targetFigure=rcvdPkText);
