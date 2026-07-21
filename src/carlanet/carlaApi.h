@@ -15,8 +15,6 @@ using json = nlohmann::json;
 #define SIM_STATUS_FINISHED_TIME_LIMIT 3
 #define SIM_STATUS_ERROR -1
 
-
-
 namespace carla_api_base{
 
     struct init_actor {
@@ -25,7 +23,6 @@ namespace carla_api_base{
         json actor_configuration;
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(init_actor, actor_id, actor_type, actor_configuration)
-
 
     struct actor_position {
         std::string actor_id;
@@ -37,6 +34,25 @@ namespace carla_api_base{
     };
     NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_position, actor_id, position, velocity, rotation, /*is_net_active,*/ type)
 
+    /*
+     * PyCarlaNet sends actor's position without the type field: it's necessary
+     * to make it optional to avoid json 403 error.
+     *
+     * Precisely, this field is only used to create dynamically unknown actors;
+     * known actors does not read/use it
+     */
+    inline void to_json(json& j, const actor_position& ap) {
+        j = json{{"actor_id", ap.actor_id}, {"position", ap.position},
+                 {"velocity", ap.velocity}, {"rotation", ap.rotation}, {"type", ap.type}};
+    }
+
+    inline void from_json(const json& j, actor_position& ap) {
+        j.at("actor_id").get_to(ap.actor_id);
+        j.at("position").get_to(ap.position);
+        j.at("velocity").get_to(ap.velocity);
+        j.at("rotation").get_to(ap.rotation);
+        ap.type = j.contains("type") ? j.at("type").get<std::string>() : std::string("");
+    }
 
     struct carla_configuration {
         int seed;
