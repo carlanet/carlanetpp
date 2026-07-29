@@ -1,0 +1,6 @@
+# Copia questo file in "makefrag.local" (non versionato) e adatta i path alla tua
+# macchina. Serve SOLO dove pkg-config non trova libzmq (es. macOS dentro opp_env).
+#
+# Esempio macOS Homebrew (Apple Silicon):
+ZMQ_CFLAGS := -I/opt/homebrew/opt/zeromq/include -I/opt/homebrew/opt/cppzmq/include -I/opt/homebrew/opt/nlohmann-json/include -I/opt/homebrew/opt/libsodium/include
+ZMQ_LIBS   := -L/opt/homebrew/opt/zeromq/lib -lzmq

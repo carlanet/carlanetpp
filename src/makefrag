@@ -1,0 +1,14 @@
+# Flag per ZeroMQ / cppzmq / nlohmann-json / libsodium, in modo portabile.
+# opp_makemake include automaticamente questo file nel Makefile generato.
+#
+# - Linux/WSL2: i flag arrivano da pkg-config (installa libzmq3-dev cppzmq-dev
+#   nlohmann-json3-dev libsodium-dev).
+# - macOS dentro opp_env: pkg-config non vede Homebrew, quindi copia
+#   makefrag.local.example in makefrag.local e adatta i path (non versionato).
+ZMQ_CFLAGS := $(shell pkg-config --cflags libzmq 2>/dev/null)
+ZMQ_LIBS   := $(shell pkg-config --libs   libzmq 2>/dev/null)
+
+-include makefrag.local
+
+CFLAGS += -DZMQ_BUILD_DRAFT_API=1 $(ZMQ_CFLAGS)
+LIBS   += $(ZMQ_LIBS)

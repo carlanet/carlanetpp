@@ -196,10 +196,28 @@ void CarlanetManager::handleMessage(cMessage *msg)
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
     //auto newActorModuleType = moduleType[];
     //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
+    /*
+     * CARLA can report a type this simulation never declared. Dereferencing end()
+     * here used to be undefined behaviour: it produced garbage module type and name
+     * strings and then failed with "Module has no submodule vector named '<garbage>'",
+     * which says nothing about the actual cause.
+     */
     auto posModuleType = moduleType.find(newActor.type);
+    if (posModuleType == moduleType.end())
+    {
+        throw cRuntimeError("CARLA reported actor '%s' of type '%s', which is not in the moduleType map. "
+                            "Add it to carlaCommunicationManager.moduleType (and moduleName).",
+                            newActor.actor_id.c_str(), newActor.type.c_str());
+    }
     std::string newActorModuleType = posModuleType->second.stringValue();
 
     auto posModuleName = moduleName.find(newActor.type);
+    if (posModuleName == moduleName.end())
+    {
+        throw cRuntimeError("CARLA reported actor '%s' of type '%s', which is not in the moduleName map. "
+                            "Add it to carlaCommunicationManager.moduleName (and moduleType).",
+                            newActor.actor_id.c_str(), newActor.type.c_str());
+    }
     std::string newActorModuleName = posModuleName->second.stringValue();
 
     std::cout << "module type and name: " << newActorModuleType.c_str() << " - " << newActorModuleName.c_str() << endl;
