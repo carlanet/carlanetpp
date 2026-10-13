@@ -32,8 +32,6 @@ namespace carla_api_base{
         //bool is_net_active;
         std::string type;
     };
-    NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(actor_position, actor_id, position, velocity, rotation, /*is_net_active,*/ type)
-
     /*
      * PyCarlaNet sends actor's position without the type field: it's necessary
      * to make it optional to avoid json 403 error.
