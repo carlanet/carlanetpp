@@ -33,11 +33,8 @@ namespace carla_api_base{
         std::string type;
     };
     /*
-     * PyCarlaNet sends actor's position without the type field: it's necessary
-     * to make it optional to avoid json 403 error.
-     *
-     * Precisely, this field is only used to create dynamically unknown actors;
-     * known actors does not read/use it
+     * Hand-written so that 'type' is optional: pycarlanet does not send it, and it
+     * is only needed to create unknown actors dynamically.
      */
     inline void to_json(json& j, const actor_position& ap) {
         j = json{{"actor_id", ap.actor_id}, {"position", ap.position},

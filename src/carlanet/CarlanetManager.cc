@@ -193,32 +193,29 @@ void CarlanetManager::handleMessage(cMessage *msg)
 /* ***********************************
  * Dynamic creation/destroying actors
  * ********************************** */
+
+/*
+ * Module type or name mapped to the CARLA type of the actor. A type missing from the
+ * map is a configuration error, reported here instead of dereferencing end().
+ */
+static std::string mappedModuleValue(const map<string,cValue>& mapping, const char* mapName, const char* otherMapName,
+                                     const carla_api_base::actor_position& actor)
+{
+    auto entry = mapping.find(actor.type);
+    if (entry == mapping.end())
+    {
+        throw cRuntimeError("CARLA reported actor '%s' of type '%s', which is not in the %s map. "
+                            "Add it to carlaCommunicationManager.%s (and %s).",
+                            actor.actor_id.c_str(), actor.type.c_str(), mapName, mapName, otherMapName);
+    }
+    return entry->second.stringValue();
+}
+
 void CarlanetManager::createAndInitializeActor(carla_api_base::actor_position newActor){
     //auto newActorModuleType = moduleType[];
     //auto newActorModuleName = newActor.is_net_active ? networkActiveModuleName : networkPassiveModuleName;
-    /*
-     * CARLA can report a type this simulation never declared. Dereferencing end()
-     * here used to be undefined behaviour: it produced garbage module type and name
-     * strings and then failed with "Module has no submodule vector named '<garbage>'",
-     * which says nothing about the actual cause.
-     */
-    auto posModuleType = moduleType.find(newActor.type);
-    if (posModuleType == moduleType.end())
-    {
-        throw cRuntimeError("CARLA reported actor '%s' of type '%s', which is not in the moduleType map. "
-                            "Add it to carlaCommunicationManager.moduleType (and moduleName).",
-                            newActor.actor_id.c_str(), newActor.type.c_str());
-    }
-    std::string newActorModuleType = posModuleType->second.stringValue();
-
-    auto posModuleName = moduleName.find(newActor.type);
-    if (posModuleName == moduleName.end())
-    {
-        throw cRuntimeError("CARLA reported actor '%s' of type '%s', which is not in the moduleName map. "
-                            "Add it to carlaCommunicationManager.moduleName (and moduleType).",
-                            newActor.actor_id.c_str(), newActor.type.c_str());
-    }
-    std::string newActorModuleName = posModuleName->second.stringValue();
+    std::string newActorModuleType = mappedModuleValue(moduleType, "moduleType", "moduleName", newActor);
+    std::string newActorModuleName = mappedModuleValue(moduleName, "moduleName", "moduleType", newActor);
 
     std::cout << "module type and name: " << newActorModuleType.c_str() << " - " << newActorModuleName.c_str() << endl;
 
